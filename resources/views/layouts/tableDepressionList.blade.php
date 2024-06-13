@@ -1,0 +1,135 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    .form-personnel {
+        /*
+        max-width: 400px;
+        margin-top: 100px;
+        */
+        margin: 0 auto;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px 0px #ccc;
+    }
+
+    .table {
+        border: 1px;
+    }
+
+    .table .thead-dark th {
+        color: #fff;
+        background-color: #212529;
+        border-color: #32383e;
+        text-align: center;
+    }
+
+    .table thead th:first-child {
+        border-top-left-radius: 7px;
+    }
+
+    .table thead th:last-child {
+        border-top-right-radius: 7px;
+    }
+
+    /* Pagination Style for Dark Theme */
+    .pagination {
+        /*  color: #fff;  Text color */
+    }
+
+    .page-link {
+        /*  background-color: #343a40; Background color of the page link */
+        /* border-color: #343a40;  Border color of the page link */
+        color: #343a40;
+    }
+
+    .page-link:hover {
+        background-color: #343a40;
+        /* Background color of the page link on hover */
+        border-color: #23272b;
+        /* Border color of the page link on hover */
+        color: #fff;
+    }
+
+    .page-item.active .page-link {
+        background-color: #343a40;
+        /* Background color of the active page link */
+        border-color: #343a40;
+        /* Border color of the active page link */
+    }
+</style>
+
+<h2 class="mt-4 mb-2" align="center">รายการประเมิน</h2> 
+
+<div class="container d-flex justify-content-end col-12 mb-1">
+@php
+    $groupId = session('group_id');
+    $username = session('username');
+@endphp
+<a href="{{ route('depression.create') }}" class="btn btn-info " ><i class="fas fa-plus-square"></i> เพิ่มข้อมูล</a>
+
+</div>
+
+<div class="container form-personnel col-12 mb-5">
+    {{-- <form method="GET" action="{{ route('manageDepression') }}" class="mb-4">
+        <i class="fas fa-search"></i> <b>ค้นหา</b>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group form-group col-8" style="margin-left:20%;">
+                    <label for="search-name">ชื่อ-สกุล (ไม่ต้องใส่คำนำหน้า)</label>
+                    <input type="text" class="form-control" id="search-name" name="name" value="{{ request('name') }}" placeholder="กรอกชื่อ-สกุล">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group col-6 ms-5">
+                    <label for="search-position">ตำแหน่ง</label>
+                    <x-position-select-box :selectedPositionId="request('position_id')"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center mt-3">
+                <button type="submit" class="btn btn-primary">ค้นหา</button>
+                <a class="btn btn-secondary" href="{{ route('manageDepression') }}">ล้างค่า</a>
+            </div>
+        </div>
+    </form> --}}
+
+    <table class="table" border="1">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col" width="10%">ลำดับ</th>
+                {{-- <th scope="col" width="15%">รูปภาพบุคลากร</th> --}}
+                <th scope="col" width="30%">ชื่อผู้ทำแบบประเมิน</th>
+                {{-- <th scope="col" width="20%">ตำแหน่ง</th> --}}
+                <th scope="col" width="25%">จัดการ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($depression_assessment as $index => $item)
+                <tr>
+                    <td align="center" scope="row">{{ ($depression_assessment->currentPage() - 1) * $depression_assessment->perPage() + $loop->iteration }}</td>
+                    </td>
+                    <td>{{ $item->name }}</td>
+                    <td>
+                        <div style="display: flex; gap: 5px;">
+                            <a class="btn btn-warning btn-sm" href="{{ route('depression.edit', ['id' => $item->id]) }}" role="button" title=""><i class="fas fa-pencil"></i> แก้ไข</a>
+                            <form action="{{ route('depression.destroy', ['id' => $item->id]) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm " onclick="return confirm('คุณต้องการลบรายการนี้หรือไม่?')"><i class="fas fa-trash"></i> ลบ</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+    <!-- แสดง pagination links -->
+    <div class="d-flex justify-content-center mt-4">
+        {{ $depression_assessment->links('pagination::bootstrap-4') }}
+    </div>
+</div>
+
+
+
